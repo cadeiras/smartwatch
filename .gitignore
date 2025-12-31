@@ -53,3 +53,8 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+#not needed folder (building)
+build/
+dependencies.lock
+managed_components/
