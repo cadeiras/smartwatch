@@ -1,0 +1,23 @@
+dependencies:
+  esp_lcd_sh8601:
+    public: true
+    version: '*'
+
+  esp_lvgl_adapter:
+    public: true
+    version: '*'
+
+  idf:
+    version: '*'
+    
+  lvgl/lvgl:
+    public: true
+    version: '*'
+
+  esp_lcd_touch_ft5x06:
+    public: true
+    version: '*'
+
+  esp_lvgl_port:
+    public: true
+    version: '*'
