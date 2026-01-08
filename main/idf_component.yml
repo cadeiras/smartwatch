@@ -3,10 +3,6 @@ dependencies:
     public: true
     version: '*'
 
-  esp_lvgl_adapter:
-    public: true
-    version: '*'
-
   idf:
     version: '*'
     
