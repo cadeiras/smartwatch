@@ -42,7 +42,7 @@ static const sh8601_lcd_init_cmd_t lcd_init_cmds[] = {
     {0x51, (uint8_t []){0xFF}, 1, 0},    //亮度
 };
 
-static void custom_touch_read(lv_indev_t * indev, lv_indev_data_t * data) {
+static void smartwatch_touch_read(lv_indev_t * indev, lv_indev_data_t * data) {
     esp_lcd_touch_handle_t handle = (esp_lcd_touch_handle_t)lv_indev_get_user_data(indev);
     
     // VERIFICAÇÃO CRUCIAL: Se o handle for NULL, sai imediatamente
@@ -217,7 +217,7 @@ void app_main(void) {
     if (lvgl_port_lock(pdMS_TO_TICKS(100))) {
         lv_indev_t * indev = lv_indev_create();
         lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER);
-        lv_indev_set_read_cb(indev, custom_touch_read);
+        lv_indev_set_read_cb(indev, smartwatch_touch_read);
         lv_indev_set_user_data(indev, tp_handle);
         lv_indev_set_display(indev, disp_driver);
         lvgl_port_unlock();
