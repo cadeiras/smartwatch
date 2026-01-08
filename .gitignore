@@ -58,3 +58,4 @@ dkms.conf
 build/
 dependencies.lock
 managed_components/
+*.backup
