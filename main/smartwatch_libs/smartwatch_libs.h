@@ -67,11 +67,21 @@ extern "C" {
  * GLOBAL PROTOTYPES
  **********************/
 
+/**
+ * Document here!
+ */
+void smartwatch_touch_read(lv_indev_t * indev, lv_indev_data_t * data);
 
 /**
  * Document here!
  */
-static void smartwatch_touch_read(lv_indev_t * indev, lv_indev_data_t * data);
+void clock_timer_cb(lv_timer_t * timer);
+
+/**
+ * Document here!
+ */
+
+void simple_digital_clock_create(lv_obj_t *scr)
 
 /**********************
  * GLOBAL VARIABLES
