@@ -5,4 +5,5 @@ idf_component_register(SRCS "main.c"
                     ${EBIKE_SOURCES}        # <--- Adiciona os ficheiros do ebike
                     ${SMARTWATCH_SOURCES}
                     INCLUDE_DIRS "." "ebike"  # <--- Adiciona a pasta ebike aos caminhos de busca
+                    INCLUDE_DIRS "." "smartwatch"  # <--- Adiciona a pasta smartwatch aos caminhos de busca
                     REQUIRES lvgl)

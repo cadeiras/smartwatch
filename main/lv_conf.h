@@ -1461,11 +1461,11 @@
     /*E-bike demo with Lottie animations (if LV_USE_LOTTIE is enabled)*/
     #define LV_USE_DEMO_EBIKE           1
     #if LV_USE_DEMO_EBIKE
-        #define LV_DEMO_EBIKE_PORTRAIT  1    /*0: for 480x270..480x320, 1: for 480x800..720x1280*/
+        #define LV_DEMO_EBIKE_PORTRAIT  0    /*0: for 480x270..480x320, 1: for 480x800..720x1280*/
     #endif
 
     /** High-resolution demo */
-    #define LV_USE_DEMO_HIGH_RES        0
+    #define LV_USE_DEMO_HIGH_RES        1
 
     /* Smart watch demo */
     #define LV_USE_DEMO_SMARTWATCH      1

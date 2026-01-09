@@ -23,9 +23,12 @@
 // Altere para o endereço do FT3168 (0x48)
 
 #include <stdio.h>
-
+#include <time.h>
 
 static const char *TAG = "smartwatch";
+
+// Handles dos ponteiros para atualização
+static lv_obj_t *lbl_clock = NULL;
 
 static const sh8601_lcd_init_cmd_t lcd_init_cmds[] = {
     {0x11, (uint8_t []){0x00}, 0, 80},   
@@ -64,6 +67,45 @@ static void smartwatch_touch_read(lv_indev_t * indev, lv_indev_data_t * data) {
     } else {
         data->state = LV_INDEV_STATE_RELEASED;
     }
+}
+
+// Timer do LVGL para chamar a função acima a cada segundo
+static void clock_timer_cb(lv_timer_t * timer) {
+   if (lbl_clock == NULL) return;
+
+    time_t now;
+    struct tm timeinfo;
+    time(&now);
+    localtime_r(&now, &timeinfo);
+
+    if (lvgl_port_lock(pdMS_TO_TICKS(100))) {
+        // Formata a string: HH:mm:SS
+        lv_label_set_text_fmt(lbl_clock, "%02d:%02d:%02d", 
+                              timeinfo.tm_hour, 
+                              timeinfo.tm_min, 
+                              timeinfo.tm_sec);
+        lvgl_port_unlock();
+    }
+}
+
+static void simple_digital_clock_create(lv_obj_t *scr) {
+        // Fundo preto absoluto (AMOLED Power Save)
+        lv_obj_set_style_bg_color(scr, lv_color_hex(0x000000), 0);
+
+        // Criar a Label do Relógio
+        lbl_clock = lv_label_create(scr);
+        
+        // Configurar Fonte e Estilo
+        // Usamos LV_FONT_DEFAULT ou podes carregar uma maior (ex: LV_FONT_MONTSERRAT_48)
+        lv_obj_set_style_text_font(lbl_clock, &lv_font_montserrat_36, 0); 
+        lv_obj_set_style_text_color(lbl_clock, lv_color_hex(0xFFFFFF), 0); // Branco
+        lv_obj_align(lbl_clock, LV_ALIGN_CENTER, 0, 0);
+
+        // Texto inicial
+        lv_label_set_text(lbl_clock, "00:00:00");
+
+        // Criar o timer de atualização
+        lv_timer_create(clock_timer_cb, 1000, NULL);
 }
 
 void app_main(void) {
@@ -203,14 +245,12 @@ void app_main(void) {
     };
     ESP_ERROR_CHECK(esp_lcd_touch_new_i2c_ft5x06(tp_io_handle, &tp_cfg, &tp_handle));
 
-    /*
     ESP_LOGI(TAG, "Add touch to LVGL port");
     const lvgl_port_touch_cfg_t touch_cfg = {
         .disp = disp_driver,
         .handle = tp_handle,
     };
     lvgl_port_add_touch(&touch_cfg);
-    */
     
     // No seu app_main, APÓS criar o tp_handle:
     ESP_LOGI(TAG, "Registando touch manualmente no LVGL 9...");
@@ -222,14 +262,17 @@ void app_main(void) {
         lv_indev_set_display(indev, disp_driver);
         lvgl_port_unlock();
     }
-
+   
     // --- 5. CRIAR CONTEÚDO (Sem loops infinitos aqui) ---
     ESP_LOGI(TAG, "Create LVGL main content");
     if (lvgl_port_lock(pdMS_TO_TICKS(100))) {
-        lv_demo_music();
-        //lv_demo_widgets();
+        //lv_demo_music();
+        lv_demo_widgets();
         //lv_demo_smartwatch();
         //lv_demo_ebike();
+
+        //simple_digital_clock_create(lv_scr_act());
+
         lvgl_port_unlock();
         // Substitua o seu while(1) final por este:
         ESP_LOGI(TAG, "Touch polling loop started");
@@ -243,4 +286,9 @@ void app_main(void) {
 
     ESP_ERROR_CHECK(gpio_config(&bk_gpio_config));
     gpio_set_level(EXAMPLE_PIN_NUM_BK_LIGHT, EXAMPLE_LCD_BK_LIGHT_ON_LEVEL);
+
+    // A main_task pode terminar ou ficar num loop de monitorização
+    while(1) {
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
 }
